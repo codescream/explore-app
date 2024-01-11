@@ -32,7 +32,18 @@ export const updatePost = (req, res) => {
   if(!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send('No post with that id');
 
-  PostMessage.updateOne(id, { $set: post }, {new: true})
+  PostMessage.findByIdAndUpdate({_id: id}, post, {new: true})
     .then((data) => res.status(201).json(data))
     .catch((err) => res.status(500).json({error: err.message}));
+}
+
+export const deletePost = (req, res) => {
+  const { id } = req.params;
+
+  if(!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send('No post with that id');
+
+  PostMessage.findByIdAndDelete(id)
+    .then((data) => res.status(200).json(data))
+    .catch((err) => res.status());
 }

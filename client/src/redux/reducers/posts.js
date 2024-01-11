@@ -13,8 +13,14 @@ export const create_post = createAsyncThunk("create_post", async (post) => {
   return data;
 });
 
-export const update_post = createAsyncThunk('update_post', async (id, post) => {
-  const { data } = await api.updatePost(id, post);
+export const update_post = createAsyncThunk("update_post", async (updateData) => {
+  const { data } =  await api.updatePost(updateData.postId, updateData.postData);
+  console.log(data);
+  return data;
+});
+
+export const delete_post = createAsyncThunk("delete_post", async (id) => {
+  const { data } = await api.deletePost(id);
   console.log(data);
   return data;
 });
@@ -60,6 +66,15 @@ const postReducer = createSlice({
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(update_post.rejected, (state, action) => {
+      state.error = true;
+    })
+    .addCase(delete_post.pending, (state, action) => {
+      state.isLoading = true;
+    })
+    .addCase(delete_post.fulfilled, (state, action) => {
+      state.data = state.data.filter(post => post._id !== action.payload._id);
+    })
+    .addCase(delete_post.rejected, (state, action) => {
       state.error = true;
     })
   }

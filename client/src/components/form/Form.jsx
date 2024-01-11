@@ -1,12 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import FileBase from 'react-file-base64';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import formStyles from './styles';
-import { create_post } from '../../redux/reducers/posts';
+import { create_post, update_post } from '../../redux/reducers/posts';
+import { post_id } from '../../redux/reducers/allState';
+
 
 const Form = () => {
+  const [formTitle, setFormTitle] = useState("Create an Explore");
+  const [submitBtn, setSubmitBtn] = useState("Submit");
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
@@ -14,20 +18,49 @@ const Form = () => {
     tags: "",
     selectedFile: [""]
   });
+  const [file, setFile] = useState(Date.now())
 
-  const formRef = useRef(null);
+  const postId = useSelector((state) => state.allStateReducer.value);
+
+  const post_to_update = useSelector((state) =>  postId ? state.postsReducer.data.find((post) => post._id === postId) : postData);
+
+  useEffect(() => {
+    if(postId) {
+      setPostData(post_to_update);
+      setFormTitle("Edit your Explore");
+      setSubmitBtn("Update");
+    }
+    
+  }, [postId, post_to_update]);
 
   const dispatch = useDispatch();
   const classes = formStyles();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    dispatch(create_post(postData));
+
+    if(submitBtn === "Update" && postId) {
+      dispatch(update_post({postId, postData}));
+
+      clear();
+    }else {
+      console.log(postData);
+      dispatch(create_post(postData));
+    }
   }
 
-  const clear = (e) => {
-    formRef.current.reset();
+  const clear = () => {
+    dispatch(post_id(null));
+    setFormTitle("Create an Explore");
+    setSubmitBtn("Submit");
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: [""]
+    });
+    setFile(Date.now());
   }
 
   const setSelectedFiles = (data) => {
@@ -43,9 +76,8 @@ const Form = () => {
         noValidate
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
-        ref={formRef}
       >
-        <Typography variant='h6'>Create an Explore</Typography>
+        <Typography variant='h6'>{formTitle}</Typography>
         <TextField 
           name="creator" 
           variant='outlined' 
@@ -85,6 +117,7 @@ const Form = () => {
             name="selectedFile"
             value={postData.selectedFile}
             type="file"
+            key={file}
             multiple={true}
             onDone={(data) => setSelectedFiles(data)}
           />
@@ -96,7 +129,7 @@ const Form = () => {
           size='large'
           type='submit'
           fullWidth
-        >Submit</Button>
+        >{submitBtn}</Button>
         <Button 
           variant="contained"
           color="secondary"
