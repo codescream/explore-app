@@ -137,7 +137,7 @@ const Form = () => {
           direction='row'
           spacing={1}
           justifyContent='flex-start'
-          style={{borderRadius: '5px', padding: '0px', margin: '5px 0', width: '95%'}}
+          style={{borderRadius: '5px', padding: '0px', margin: '5px 8px', width: '100%'}}
           className={classes.tags}
           tabIndex="0"
         >
@@ -149,7 +149,7 @@ const Form = () => {
               >x</span></Typography></Grid>)
             }
           
-          <Grid item xs={10}>
+          <Grid item xs={12}>
             <TextField 
               name="tags" 
               size='small'

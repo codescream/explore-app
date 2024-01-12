@@ -36,11 +36,11 @@ const App = () => {
       </AppBar>
       <Grow in>
         <Container>
-          <Grid container justifyContent='space-between' alignItems="stretch" spacing={3}>
-            <Grid item xs={12} sm={7}>
+          <Grid container className={classes.mobile} justifyContent='space-between' alignItems="stretch" spacing={3}>
+            <Grid item xs={12} md={7}>
               <Posts />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} md={4}>
               <Form />
             </Grid>
           </Grid>
