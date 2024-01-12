@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Paper } from '@material-ui/core';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextField, Button, Typography, Paper, Grid } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux';
+
 
 import formStyles from './styles';
 import { create_post, update_post } from '../../redux/reducers/posts';
@@ -11,14 +12,17 @@ import { post_id } from '../../redux/reducers/allState';
 const Form = () => {
   const [formTitle, setFormTitle] = useState("Create an Explore");
   const [submitBtn, setSubmitBtn] = useState("Submit");
+  const [tags, setTags] = useState([]);
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
     message: "",
-    tags: "",
+    tags: [""],
     selectedFile: [""]
   });
-  const [file, setFile] = useState(Date.now())
+  const [file, setFile] = useState(Date.now());
+
+  const tagsRef = useRef(null);
 
   const postId = useSelector((state) => state.allStateReducer.value);
 
@@ -26,11 +30,11 @@ const Form = () => {
 
   useEffect(() => {
     if(postId) {
-      setPostData(post_to_update);
+      setTags(post_to_update.tags);
+      setPostData({ ...post_to_update,  tags: '' });
       setFormTitle("Edit your Explore");
       setSubmitBtn("Update");
     }
-    
   }, [postId, post_to_update]);
 
   const dispatch = useDispatch();
@@ -38,15 +42,14 @@ const Form = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if(submitBtn === "Update" && postId) {
-      dispatch(update_post({postId, postData}));
-
-      clear();
+      dispatch(update_post({postId, postData: {...postData, tags: tags}}));
     }else {
       console.log(postData);
-      dispatch(create_post(postData));
+      dispatch(create_post({...postData, tags: tags}));
     }
+    clear();
   }
 
   const clear = () => {
@@ -57,9 +60,10 @@ const Form = () => {
       creator: "",
       title: "",
       message: "",
-      tags: "",
+      tags: [""],
       selectedFile: [""]
     });
+    setTags([]);
     setFile(Date.now());
   }
 
@@ -67,6 +71,30 @@ const Form = () => {
     const base64 = data.map(({ base64 }) => base64);
     
     setPostData({ ...postData, selectedFile: base64 });
+  }
+
+  const createTags = (e) => {
+    console.log(e);
+    console.log(postData.tags);
+    console.log(tagsRef.current.value);
+    switch(e.key) {
+      case ' ':
+        if(!tags.includes(e.target.value) && e.target.value !== "")
+          setTags([...tags, `${e.target.value}`]);
+        postData.tags = '';
+        tagsRef.current.value = "";
+        break;
+      case 'Backspace':
+        if(postData.tags === '')
+          setTags([...tags.slice(0, -1)]);
+        break;
+      default:
+        break;
+    }
+  }
+
+  const clearTag = (tag2remove) => {
+    setTags(tags.filter(tag => tag !== tag2remove));
   }
 
   return (
@@ -104,14 +132,42 @@ const Form = () => {
           value={postData.message}
           onChange={e => setPostData({ ...postData, message: e.target.value })}
         />
-        <TextField 
-          name="tags" 
-          variant='outlined' 
-          label='Tags'
-          fullWidth 
-          value={postData.tags}
-          onChange={e => setPostData({ ...postData, tags: e.target.value })}
-        />
+        <Grid 
+          container
+          direction='row'
+          spacing={1}
+          justifyContent='flex-start'
+          style={{borderRadius: '5px', padding: '0px', margin: '5px 0', width: '95%'}}
+          className={classes.tags}
+          tabIndex="0"
+        >
+            {
+              tags.map((tag, index) => <Grid item key={index}
+                style={{backgroundColor: 'blue', margin: '2px', borderRadius: '3px', height: 'fit-content'}}
+              ><Typography>{tag} <span style={{cursor: 'pointer', color: 'red'}}
+                onClick={() => clearTag(tag)}
+              >x</span></Typography></Grid>)
+            }
+          
+          <Grid item xs={10}>
+            <TextField 
+              name="tags" 
+              size='small'
+              // variant='outlined' 
+              // label='Tags'
+              fullWidth 
+              placeholder='Enter a tag, and spacebar to set'
+              value={postData.tags}
+              onChange={e => setPostData({ ...postData, tags: e.target.value === ' ' ? '' : e.target.value })}
+              onKeyDown={e => createTags(e)}
+              style={{margin: '0px', padding: '0px', paddingLeft: '5px'}}
+              InputProps={{
+                disableUnderline: true,
+              }}
+              inputRef={tagsRef}
+            />
+          </Grid>
+        </Grid>
         <div className={classes.fileInput}>
           <FileBase 
             name="selectedFile"

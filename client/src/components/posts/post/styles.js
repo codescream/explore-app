@@ -38,8 +38,8 @@ export default makeStyles({
   },
   details: {
     display: 'flex',
-    justifyContent: 'space-between',
-    margin: '20px',
+    justifyContent: 'flex-start',
+    margin: '10px 5px',
   },
   title: {
     padding: '0 16px',

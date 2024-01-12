@@ -8,6 +8,7 @@ export const fetch_all = createAsyncThunk('fetch_all', async () => {
 });
 
 export const create_post = createAsyncThunk("create_post", async (post) => {
+  console.log(post);
   const { data } = await api.createPost(post);
   console.log(data);
   return data;

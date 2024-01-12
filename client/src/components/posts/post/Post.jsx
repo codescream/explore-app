@@ -14,6 +14,8 @@ const Post = ({ post }) => {
   const classes = postStyles();
   const dispatch = useDispatch();
 
+  console.log(post);
+
   return (
     <Card
       className={classes.card}
@@ -37,13 +39,16 @@ const Post = ({ post }) => {
         </Button>
       </div>
       <div className={classes.details}>
-        <Typography
-          variant='body2'
-          color='textSecondary'
-        >
-          {/* {post.tags.map((tag) => `#${tag}`)} */}
-          {post.tags}
-        </Typography>
+        {
+          post.tags.map((tag, index) => 
+          <Button
+          color='primary'
+          style={{ fontSize: '8px', padding: '2px 1px !important' }}
+          key={`${tag}-${index}`}
+          >
+            {`#${tag}`}
+          </Button>
+        )}
       </div>
       <div className={classes.title}>
         <Typography
@@ -54,16 +59,18 @@ const Post = ({ post }) => {
       </div>
       <CardContent>
         <Typography
-          variant='h5'
+          variant='body2'
           gutterBottom
+          color="textSecondary"
+          component="p"
         >
-          {post.message.length > 20 ? `${post.message.substring(0, 20)}...` : post.message}
+          {post.message.length > 100 ? `${post.message.substring(0, 100)}...` : post.message}
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button size='small' color='primary' onClick={() => dispatch(update_post({ postId:post._id, postData: {...post, likeCount: post.likeCount + 1} }))}>
           <ThumbUpAltIcon fontSize='small' />
-          LIKE
+          &nbsp; LIKE &nbsp;
           {post.likeCount}
         </Button>
         <Button size='small' color='primary' onClick={() => dispatch(delete_post(post._id))}>
