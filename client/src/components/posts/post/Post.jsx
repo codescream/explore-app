@@ -14,8 +14,6 @@ const Post = ({ post }) => {
   const classes = postStyles();
   const dispatch = useDispatch();
 
-  console.log(post);
-
   return (
     <Card
       className={classes.card}

@@ -3,26 +3,21 @@ import * as api from '../../api';
 
 export const fetch_all = createAsyncThunk('fetch_all', async () => {
   const { data } = await api.fetchPost();
-  console.log(data);
   return data;
 });
 
 export const create_post = createAsyncThunk("create_post", async (post) => {
-  console.log(post);
   const { data } = await api.createPost(post);
-  console.log(data);
   return data;
 });
 
 export const update_post = createAsyncThunk("update_post", async (updateData) => {
   const { data } =  await api.updatePost(updateData.postId, updateData.postData);
-  console.log(data);
   return data;
 });
 
 export const delete_post = createAsyncThunk("delete_post", async (id) => {
   const { data } = await api.deletePost(id);
-  console.log(data);
   return data;
 });
 

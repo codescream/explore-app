@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TextField, Button, Typography, Paper, Grid } from '@material-ui/core';
+import { TextField, Button, Typography, Paper, Grid, CircularProgress } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -21,6 +21,7 @@ const Form = () => {
     selectedFile: [""]
   });
   const [file, setFile] = useState(Date.now());
+  const [processing, setProcessing] = useState(false);
 
   const tagsRef = useRef(null);
 
@@ -42,14 +43,18 @@ const Form = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+    
+    setProcessing(true);
+
     if(submitBtn === "Update" && postId) {
-      dispatch(update_post({postId, postData: {...postData, tags: tags}}));
+      dispatch(update_post({postId, postData: {...postData, tags: tags}}))
+        .then(() => {clear(); setProcessing(false)})
+        .catch((err) => console.log(err));
     }else {
-      console.log(postData);
-      dispatch(create_post({...postData, tags: tags}));
+      dispatch(create_post({...postData, tags: tags}))
+      .then(() => {clear(); setProcessing(false)})
+      .catch((err) => console.log(err));
     }
-    clear();
   }
 
   const clear = () => {
@@ -74,9 +79,6 @@ const Form = () => {
   }
 
   const createTags = (e) => {
-    console.log(e);
-    console.log(postData.tags);
-    console.log(tagsRef.current.value);
     switch(e.key) {
       case ' ':
         if(!tags.includes(e.target.value) && e.target.value !== "")
@@ -184,14 +186,22 @@ const Form = () => {
           color="primary"
           size='large'
           type='submit'
+          disabled={processing}
           fullWidth
-        >{submitBtn}</Button>
+        >{submitBtn}
+          {
+            processing && <CircularProgress 
+            style={{ position: 'absolute', width: '18px', height: '18px', color: 'black', zIndex: '200'}}
+          />
+          }
+        </Button>
         <Button 
           variant="contained"
           color="secondary"
           size='small'
           onClick={clear}
           fullWidth
+          disabled={processing}
         >Clear</Button>
       </form>
     </Paper>

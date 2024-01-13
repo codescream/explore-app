@@ -7,15 +7,13 @@ import postsStyles from './styles';
 
 const Posts = () => {
   const posts = useSelector(state => state.postsReducer.data);
-
-  console.log(posts);
   
   const classes = postsStyles();
   
   return (
     <>
       {
-        !posts.length ? <CircularProgress /> :
+        !posts.length ? <CircularProgress color='inherit' /> :
         (
           <Grid
             className={classes.mainContainer}
