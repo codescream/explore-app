@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles({
+export default makeStyles((theme) => ({
   media: {
     height: 0,
     paddingTop: '56.25%',
@@ -18,8 +18,13 @@ export default makeStyles({
     flexDirection: 'column',
     justifyContent: 'space-between',
     borderRadius: '15px',
-    height: '100%',
+    height: '400px',
     position: 'relative',
+  },
+  [theme.breakpoints.down('xs')]: {
+    card: {
+      height: '100%',
+    }
   },
   overlay: {
     position: 'absolute',
@@ -39,7 +44,8 @@ export default makeStyles({
   details: {
     display: 'flex',
     justifyContent: 'flex-start',
-    margin: '10px 5px',
+    flexWrap: 'wrap',
+    margin: '5px 5px',
   },
   title: {
     padding: '0 16px',
@@ -49,4 +55,4 @@ export default makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
   },
-});
+}));

@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import navStyles from './styles';
 
 import explore from '../../assets/explore.png';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const loggedUser = useSelector(state => state.userReducer.data);
+
+  useEffect(() => {
+    console.log(loggedUser);
+    setUser(loggedUser);
+    
+  }, [loggedUser]);
+
   const classes = navStyles();
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
@@ -36,15 +45,15 @@ const Navbar = () => {
               className={classes.profile}
             >
               <Avatar
-                className='classes.purple' alt={user?.result?.name} src={user?.result?.imageUrl}
+                className='classes.purple' alt={user?.result?.name} src={user?.picture}
               >
-                {user?.result?.name?.charAt[0]}
+                {user?.name.charAt[0]}
               </Avatar>
               <Typography
                 className={classes.userName}
                 variant='h6'
               >
-                {user?.result?.name}
+                {user?.name}
               </Typography>
               <Button 
                 variant="contained"

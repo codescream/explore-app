@@ -14,6 +14,10 @@ const Post = ({ post }) => {
   const classes = postStyles();
   const dispatch = useDispatch();
 
+  const stopBubble = (e) => {
+    e.stopPropagation();
+  }
+
   return (
     <Card
       className={classes.card}
@@ -31,7 +35,7 @@ const Post = ({ post }) => {
       </div>
       <div className={classes.overlay2}>
         <Button style={{color: 'white'}}
-          size='small' onClick={() => dispatch(post_id(post._id))}
+          size='small' onClick={(e) => {stopBubble(e); dispatch(post_id(post._id))}}
         >
           <MoreHorizIcon fontSize='medium' />
         </Button>
@@ -41,8 +45,9 @@ const Post = ({ post }) => {
           post.tags.map((tag, index) => 
           <Button
           color='primary'
-          style={{ fontSize: '8px', padding: '2px 1px !important' }}
+          style={{ fontSize: '7px', padding: '2px 1px' }}
           key={`${tag}-${index}`}
+          onClick={stopBubble}
           >
             {`#${tag}`}
           </Button>
@@ -62,16 +67,16 @@ const Post = ({ post }) => {
           color="textSecondary"
           component="p"
         >
-          {post.message.length > 100 ? `${post.message.substring(0, 100)}...` : post.message}
+          {post.message.length > 50 ? `${post.message.substring(0, 50)}...` : post.message}
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size='small' color='primary' onClick={() => dispatch(update_post({ postId:post._id, postData: {...post, likeCount: post.likeCount + 1} }))}>
+        <Button size='small' color='primary' onClick={(e) => {stopBubble(e); dispatch(update_post({ postId:post._id, postData: {...post, likeCount: post.likeCount + 1} }))}}>
           <ThumbUpAltIcon fontSize='small' />
           &nbsp; LIKE &nbsp;
           {post.likeCount}
         </Button>
-        <Button size='small' color='primary' onClick={() => dispatch(delete_post(post._id))}>
+        <Button size='small' color='primary' onClick={(e) => {stopBubble(); dispatch(delete_post(post._id))}}>
           <DeleteIcon fontSize='small' />
           Delete
         </Button>
