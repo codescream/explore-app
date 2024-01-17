@@ -26,5 +26,8 @@ export default makeStyles((theme) => ({
   },
   googleButton: {
     marginBottom: theme.spacing(2)
+  },
+  picture: {
+    margin: '5px 0 0px 10px' 
   }
 }))

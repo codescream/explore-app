@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
-import navStyles from './styles';
+import { googleLogout } from '@react-oauth/google';
 
 import explore from '../../assets/explore.png';
+import navStyles from './styles';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
-  const loggedUser = useSelector(state => state.userReducer.data);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  const profile = useSelector(state => state.userReducer.data);
+
+  console.log(profile);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(loggedUser);
-    setUser(loggedUser);
-    
-  }, [loggedUser]);
+    console.log(profile);
+    if(profile) {
+      setUser(profile.data);
+      navigate('/', { replace: true});
+      localStorage.setItem('profile', JSON.stringify(profile.data));
+      localStorage.setItem('token', JSON.stringify(profile.token));
+    }
+  }, [profile]);
+
+  const logout = () => {
+    googleLogout();
+    localStorage.clear();
+    setUser(null);
+    navigate('/', { replace: true });
+  }
 
   const classes = navStyles();
   return (
@@ -45,9 +60,9 @@ const Navbar = () => {
               className={classes.profile}
             >
               <Avatar
-                className='classes.purple' alt={user?.result?.name} src={user?.picture}
+                className='classes.purple' alt={user?.name} src={user?.picture}
               >
-                {user?.name.charAt[0]}
+                {user?.name?.charAt[0]}
               </Avatar>
               <Typography
                 className={classes.userName}
@@ -59,6 +74,7 @@ const Navbar = () => {
                 variant="contained"
                 className={classes.logout}
                 color='secondary'
+                onClick={logout}
               >Logout</Button>
             </div>
           ) : (

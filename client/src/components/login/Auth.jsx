@@ -4,25 +4,46 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { FcGoogle } from 'react-icons/fc';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import FileBase64 from 'react-file-base64';
 
 import authStyles from './styles';
 import Input from './Input';
-import { sign_in } from '../../redux/reducers/user';
+import { sign_in_google, create_user, sign_in } from '../../redux/reducers/user';
+
+const initFormState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmpassword: "",
+  picture: ""
+}
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState(initFormState);
   const classes = authStyles();
 
   const dispatch = useDispatch();  
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if(isSignup){
+      dispatch(create_user(formData))
+        .then((data) => console.log(data))
+    }else {
+      dispatch(sign_in({ email: formData.email, password: formData.password }))
+        .then((data) => navigate('/', { replace: true }));
+    }
   }
 
-  const handleChange = () => {
-
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
   const handleShowPassword = (option) => {
@@ -43,12 +64,13 @@ const Auth = () => {
   const login = useGoogleLogin({
     onSuccess: response => {
       console.log(response);
-      dispatch(sign_in(response));
+      dispatch(sign_in_google({code: response.code}))
+        .then((data) => console.log(data));
     },
     onError: response => {
       console.log(response);
     },
-    flow: 'implicit',
+    flow: 'auth-code',
     ux_mode: 'popup',
     onNonOAuthError: onNonOAuthError => console.log(onNonOAuthError),
     state_cookie_domain: "http://localhost"
@@ -79,7 +101,20 @@ const Auth = () => {
                   <Input name='password' label='Password' handleChange={handleChange} type={showPassword ? "text" : "password"} handleShowPassword={() => handleShowPassword('')} />
             {
               isSignup && (
-                <Input name='confirmpassword' label='Confirm Password' handleChange={handleChange} type={showConfirmPassword ? "text" : "password"} handleShowPassword={() => handleShowPassword('confirm')} />
+                <>
+                  <Input name='confirmpassword' label='Confirm Password' handleChange={handleChange} type={showConfirmPassword ? "text" : "password"} handleShowPassword={() => handleShowPassword('confirm')} />
+
+                  <div className={classes.picture}>
+                    <FileBase64 
+                      type="file"
+                      name="picture"
+                      multiple={false}
+                      value={formData.picture}
+                      onDone={({base64}) => setFormData({ ...formData, picture: base64 })}
+                    />
+                  </div>
+                  
+                </>
               )
             }
           </Grid>

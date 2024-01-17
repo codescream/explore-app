@@ -9,6 +9,13 @@ export default makeStyles(() => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+
+    '& div': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // backgroundColor: 'red'
+    }
   },
   heading: {
     color: 'rgba(0,183,255, 1)',
@@ -16,5 +23,8 @@ export default makeStyles(() => ({
   },
   image: {
     marginLeft: '15px',
+  },
+  profile: {
+    gap: '10px',
   }
 }))

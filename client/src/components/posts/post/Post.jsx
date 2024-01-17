@@ -8,14 +8,34 @@ import { post_id } from '../../../redux/reducers/allState';
 import { useDispatch } from 'react-redux';
 
 import postStyles from './styles';
-import { delete_post, update_post } from '../../../redux/reducers/posts';
+import { delete_post, like_post } from '../../../redux/reducers/posts';
+import { useNavigate } from 'react-router-dom';
 
 const Post = ({ post }) => {
   const classes = postStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const stopBubble = (e) => {
     e.stopPropagation();
+  }
+
+  const handleLikes = (e) => {
+    e.stopPropagation();
+
+    if(!localStorage.getItem('profile')) {
+      navigate('/auth', { replace: true});
+      return;
+    }
+
+    console.log(post);
+
+    const id = JSON.parse(localStorage.getItem('profile'))?._id;
+    if(post.likes.includes(`${id}`)) {
+      dispatch(like_post({ postId:post._id, postData: {...post, likes: [...post.likes.filter(like => like !== id)] } }));
+    }else {
+      dispatch(like_post({ postId:post._id, postData: {...post, likes: [...post.likes, id] } }));
+    }
   }
 
   return (
@@ -71,12 +91,12 @@ const Post = ({ post }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size='small' color='primary' onClick={(e) => {stopBubble(e); dispatch(update_post({ postId:post._id, postData: {...post, likeCount: post.likeCount + 1} }))}}>
+        <Button size='small' color='primary' onClick={handleLikes}>
           <ThumbUpAltIcon fontSize='small' />
           &nbsp; LIKE &nbsp;
-          {post.likeCount}
+          {post.likes.length}
         </Button>
-        <Button size='small' color='primary' onClick={(e) => {stopBubble(); dispatch(delete_post(post._id))}}>
+        <Button size='small' color='primary' onClick={(e) => {stopBubble(e); dispatch(delete_post(post._id))}}>
           <DeleteIcon fontSize='small' />
           Delete
         </Button>
