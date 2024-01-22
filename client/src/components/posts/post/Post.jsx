@@ -16,6 +16,8 @@ const Post = ({ post }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const id = JSON.parse(localStorage.getItem('profile'))?._id;
+
   const stopBubble = (e) => {
     e.stopPropagation();
   }
@@ -28,14 +30,13 @@ const Post = ({ post }) => {
       return;
     }
 
-    console.log(post);
-
-    const id = JSON.parse(localStorage.getItem('profile'))?._id;
+    let likePost = [];
     if(post.likes.includes(`${id}`)) {
-      dispatch(like_post({ postId:post._id, postData: {...post, likes: [...post.likes.filter(like => like !== id)] } }));
+      likePost = [...post.likes.filter(like => like !== id)];
     }else {
-      dispatch(like_post({ postId:post._id, postData: {...post, likes: [...post.likes, id] } }));
+      likePost =  [...post.likes, id];
     }
+    dispatch(like_post({ postId:post._id, postData: { ...post, likes: [ ...likePost ]} }));
   }
 
   return (
@@ -50,12 +51,13 @@ const Post = ({ post }) => {
       <div
         className={classes.overlay}
       >
-        <Typography variant='h6'>{post.creator}</Typography>
+        <Typography variant='h6'>{post.name}</Typography>
         <Typography variant='body2'>{moment(post.createdAt).fromNow()}</Typography>
       </div>
       <div className={classes.overlay2}>
         <Button style={{color: 'white'}}
           size='small' onClick={(e) => {stopBubble(e); dispatch(post_id(post._id))}}
+          disabled={post.creator_id !== id}
         >
           <MoreHorizIcon fontSize='medium' />
         </Button>
@@ -96,7 +98,10 @@ const Post = ({ post }) => {
           &nbsp; LIKE &nbsp;
           {post.likes.length}
         </Button>
-        <Button size='small' color='primary' onClick={(e) => {stopBubble(e); dispatch(delete_post(post._id))}}>
+        <Button size='small' color='primary' disabled={post.creator_id !== id} 
+          onClick={(e) => {stopBubble(e); 
+          dispatch(post_id(null));
+          dispatch(delete_post(post._id))}}>
           <DeleteIcon fontSize='small' />
           Delete
         </Button>

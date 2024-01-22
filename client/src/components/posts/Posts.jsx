@@ -12,12 +12,15 @@ const Posts = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   
+
+
   const classes = postsStyles();
 
   // useEffect(() => {
   //   first
   
   // }, [showDetails])
+
   
   document.body.style.overflow = showDetails ? 'hidden' : '';
   

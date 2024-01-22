@@ -52,6 +52,11 @@ const userReducer = createSlice({
     data: null,
     error: false,
   },
+  reducers: {
+    logout: (state, action) => {
+      state.data = null;
+    }
+  },
   extraReducers(builder) {
     builder.addCase(sign_in_google.pending, (state, action) => {
       state.isLoading = true;
@@ -83,5 +88,7 @@ const userReducer = createSlice({
     })
   }
 });
+
+export const { logout } = userReducer.actions;
 
 export default userReducer.reducer;

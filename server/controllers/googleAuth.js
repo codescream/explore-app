@@ -21,9 +21,13 @@ export const authenticateUser = async (req, res) => {
 
     if(!id_token)
       return res.status(400).json({ message: 'Auth error'});
+
+    // const test = await axios.post(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${tokenParams.code}`);
+
+    // console.log(test)
     
     const { sub, email, name, picture } = jwt.decode(id_token);
-    const user = { sub, email, name, picture, id_token };
+    const user = { _id: sub, email, name, picture, id_token };
 
     res.json(user);
   

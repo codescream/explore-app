@@ -38,7 +38,7 @@ const Auth = () => {
         .then((data) => console.log(data))
     }else {
       dispatch(sign_in({ email: formData.email, password: formData.password }))
-        .then((data) => navigate('/', { replace: true }));
+        .then((data) => {console.log(data); navigate('/', { replace: true })});
     }
   }
 

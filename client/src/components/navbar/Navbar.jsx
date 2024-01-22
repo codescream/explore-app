@@ -5,14 +5,21 @@ import { googleLogout } from '@react-oauth/google';
 
 import explore from '../../assets/explore.png';
 import navStyles from './styles';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/reducers/user';
 
 const Navbar = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  const [user, setUser] = useState(localStorage.getItem('profile') ? JSON.parse(localStorage.getItem('profile')) : null);
   const profile = useSelector(state => state.userReducer.data);
+  const error = useSelector(state => state.postsReducer.error);
 
+  console.log('always');
+
+  console.log(error);
   console.log(profile);
+  console.log(user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log(profile);
@@ -22,11 +29,21 @@ const Navbar = () => {
       localStorage.setItem('profile', JSON.stringify(profile.data));
       localStorage.setItem('token', JSON.stringify(profile.token));
     }
-  }, [profile]);
 
-  const logout = () => {
+    if(error?.message === "jwt expired" && user) {
+      console.log('error');
+      logOutUser();
+      // dispatch(logout());
+    }
+    // eslint-disable-next-line
+  }, [profile, error]);
+
+  
+
+  const logOutUser = () => {
     googleLogout();
     localStorage.clear();
+    dispatch(logout());
     setUser(null);
     navigate('/', { replace: true });
   }
@@ -74,7 +91,7 @@ const Navbar = () => {
                 variant="contained"
                 className={classes.logout}
                 color='secondary'
-                onClick={logout}
+                onClick={logOutUser}
               >Logout</Button>
             </div>
           ) : (

@@ -2,28 +2,59 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as apiPost from '../../api/post';
 
 export const fetch_all = createAsyncThunk('fetch_all', async () => {
-  const { data } = await apiPost.fetchPost();
-  return data;
+  try {
+    const { data } = await apiPost.fetchPost();
+    return data;
+  }catch(err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
 });
 
 export const create_post = createAsyncThunk("create_post", async (post) => {
-  const { data } = await apiPost.createPost(post);
-  return data;
+  console.log(post);
+  try {
+    const { data } = await apiPost.createPost(post);
+    return data;
+  }catch(err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
+  
 });
 
 export const like_post = createAsyncThunk("like_post", async (updateData) => {
-  const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
-  return data;
+  console.log(updateData);
+  // const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
+  // console.log(data);
+  // return data;  
+  try {
+    const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
+    return data;
+  }catch(err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
 });
 
 export const update_post = createAsyncThunk("update_post", async (updateData) => {
-  const { data } =  await apiPost.updatePost(updateData.postId, updateData.postData);
-  return data;
+  try {
+    const { data } =  await apiPost.updatePost(updateData.postId, updateData.postData);
+    return data;
+  }catch (err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
 });
 
 export const delete_post = createAsyncThunk("delete_post", async (id) => {
-  const { data } = await apiPost.deletePost(id);
-  return data;
+  try {
+    const { data } = await apiPost.deletePost(id);
+    return data;
+  }catch (err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
 });
 
 const postReducer = createSlice({
@@ -31,7 +62,7 @@ const postReducer = createSlice({
   initialState: {
     isLoading: false,
     data: [],
-    error: false
+    error: []
   },
   reducers: {
     fetch:  (state, action) => {
@@ -49,7 +80,7 @@ const postReducer = createSlice({
       state.data = action.payload;
     })
     .addCase(fetch_all.rejected, (state, action) => {
-      state.error = true;
+      state.error = action.error;
     })
     .addCase(create_post.pending, (state, action) => {
       state.isLoading = true;
@@ -58,16 +89,18 @@ const postReducer = createSlice({
       state.data.push(action.payload);
     })
     .addCase(create_post.rejected, (state, action) => {
-      state.error = true;
+      state.error = action.error;
     })
     .addCase(like_post.pending, (state, action) => {
       state.isLoading = true;
     })
     .addCase(like_post.fulfilled, (state, action) => {
+      console.log(action);
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(like_post.rejected, (state, action) => {
-      state.error = true;
+      console.log(action);
+      state.error = action.error;
     })
     .addCase(update_post.pending, (state, action) => {
       state.isLoading = true;
@@ -76,7 +109,7 @@ const postReducer = createSlice({
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(update_post.rejected, (state, action) => {
-      state.error = true;
+      state.error = action.error;
     })
     .addCase(delete_post.pending, (state, action) => {
       state.isLoading = true;
@@ -85,7 +118,7 @@ const postReducer = createSlice({
       state.data = state.data.filter(post => post._id !== action.payload._id);
     })
     .addCase(delete_post.rejected, (state, action) => {
-      state.error = true;
+      state.error = action.error;
     })
   }
 });

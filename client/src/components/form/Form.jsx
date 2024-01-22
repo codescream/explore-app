@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextField, Button, Typography, Paper, Grid, CircularProgress } from '@material-ui/core';
 import FileBase from 'react-file-base64';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux'; 
 
 import formStyles from './styles';
 import { create_post, update_post } from '../../redux/reducers/posts';
@@ -13,8 +12,8 @@ const Form = () => {
   const [formTitle, setFormTitle] = useState("Create an Explore");
   const [submitBtn, setSubmitBtn] = useState("Submit");
   const [tags, setTags] = useState([]);
+  const loggedUser = localStorage.getItem('profile') ? JSON.parse(localStorage.getItem('profile')) : null;
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: [""],
@@ -26,8 +25,10 @@ const Form = () => {
   const tagsRef = useRef(null);
 
   const postId = useSelector((state) => state.allStateReducer.value);
+  const post_to_update = useSelector((state) => postId ? state.postsReducer.data.find((post) => post._id === postId) : postData);
 
-  const post_to_update = useSelector((state) =>  postId ? state.postsReducer.data.find((post) => post._id === postId) : postData);
+  const dispatch = useDispatch();
+  const classes = formStyles();
 
   useEffect(() => {
     if(postId) {
@@ -35,15 +36,16 @@ const Form = () => {
       setPostData({ ...post_to_update,  tags: '' });
       setFormTitle("Edit your Explore");
       setSubmitBtn("Update");
+    }else {
+      clear();
     }
-  }, [postId, post_to_update]);
-
-  const dispatch = useDispatch();
-  const classes = formStyles();
+    // eslint-disable-next-line
+  }, [postId]);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     setProcessing(true);
 
     if(submitBtn === "Update" && postId) {
@@ -51,18 +53,17 @@ const Form = () => {
         .then(() => {clear(); setProcessing(false)})
         .catch((err) => console.log(err));
     }else {
-      dispatch(create_post({...postData, tags: tags}))
-      .then(() => {clear(); setProcessing(false)})
+      dispatch(create_post({...postData, tags: tags, name: loggedUser.name }))
+      .then(() => {clear(); setProcessing(false);})
       .catch((err) => console.log(err));
     }
   }
 
   const clear = () => {
-    dispatch(post_id(null));
+    postId && dispatch(post_id(null));
     setFormTitle("Create an Explore");
     setSubmitBtn("Submit");
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: [""],
@@ -70,7 +71,7 @@ const Form = () => {
     });
     setTags([]);
     setFile(Date.now());
-  }
+  };
 
   const setSelectedFiles = (data) => {
     const base64 = data.map(({ base64 }) => base64);
@@ -84,11 +85,10 @@ const Form = () => {
         if(!tags.includes(e.target.value) && e.target.value !== "")
           setTags([...tags, `${e.target.value}`]);
         postData.tags = '';
-        tagsRef.current.value = "";
+        // tagsRef.current.value = "";
         break;
       case 'Backspace':
-        if(postData.tags === '')
-          setTags([...tags.slice(0, -1)]);
+        (postData.tags === '') && setTags([...tags.slice(0, -1)]);
         break;
       default:
         break;
@@ -108,14 +108,14 @@ const Form = () => {
         onSubmit={handleSubmit}
       >
         <Typography variant='h6'>{formTitle}</Typography>
-        <TextField 
+        {/* <TextField 
           name="creator" 
           variant='outlined' 
           label='Creator' 
           fullWidth 
           value={postData.creator}
           onChange={e => setPostData({ ...postData, creator: e.target.value })}
-        />
+        /> */}
         <TextField 
           name="title" 
           variant='outlined' 
@@ -144,9 +144,9 @@ const Form = () => {
           tabIndex="0"
         >
             {
-              tags.map((tag, index) => <Grid item key={index}
-                style={{backgroundColor: 'blue', margin: '2px', borderRadius: '3px', height: 'fit-content'}}
-              ><Typography>{tag} <span style={{cursor: 'pointer', color: 'red'}}
+              tags?.map((tag, index) => <Grid item key={index}
+                style={{backgroundColor: '#4356d3', margin: '2px', paddingLeft: '10px', borderRadius: '14px', height: 'fit-content', hover: 'red'}}
+              ><Typography style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', fontSize: '13px'}}>{tag} <span style={{cursor: 'pointer', color: 'black', padding: '0px 8px 1px', marginLeft: '5px', fontSize: '15px', backgroundColor: '#f50057', borderRadius: '60%', textAlign: 'center', fontWeight: 'bold'}}
                 onClick={() => clearTag(tag)}
               >x</span></Typography></Grid>)
             }
@@ -166,7 +166,7 @@ const Form = () => {
               InputProps={{
                 disableUnderline: true,
               }}
-              inputRef={tagsRef}
+              // inputRef={tagsRef}
             />
           </Grid>
         </Grid>
@@ -186,7 +186,7 @@ const Form = () => {
           color="primary"
           size='large'
           type='submit'
-          disabled={processing}
+          disabled={!loggedUser || processing}
           fullWidth
         >{submitBtn}
           {
@@ -201,7 +201,7 @@ const Form = () => {
           size='small'
           onClick={clear}
           fullWidth
-          disabled={processing}
+          disabled={!loggedUser || processing}
         >Clear</Button>
       </form>
     </Paper>

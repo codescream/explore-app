@@ -12,7 +12,7 @@ const root = createRoot(container);
 
 root.render(
   <GoogleOAuthProvider
-    clientId={process.env.GOOGLE_OAUTH_CLIENT_ID}
+    clientId='221110187907-0lsck5rqjosb6rbflf6ndk69h35vkp1u.apps.googleusercontent.com'
   >
     <Provider store={store}>
       <App />

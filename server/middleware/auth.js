@@ -13,16 +13,18 @@ const auth = (req, res, next) => {
       // custom token
       decoded = jwt.verify(token, 'secret');
 
-      req.id = decoded?.id;
+      req.userId = decoded?.id;
     }else {
       // google oauth token
+      console.log('google oauth');
       decoded = jwt.decode(token);
 
-      req.id = decoded?.sub;
+      req.userId = decoded?.sub;
     }
 
     next();
   }catch(error) {
+    res.status(404).json({message: error.message});
     console.log(error);
   }
   

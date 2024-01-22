@@ -25,7 +25,7 @@ export default makeStyles((theme) => ({
       border: '1px solid black',
     },
     '&:focus': {
-      border: '2px solid blue',
+      border: '2px solid #3F51B5',
     }
   },
   buttonSubmit: {
