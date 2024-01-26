@@ -14,6 +14,26 @@ export const getPosts = (req, res) => {
     .catch((err) => res.status(500).json({ message: err.message}));
 }
 
+export const searchPosts = (req, res) => {
+  const { search, tags } = req.query;
+
+  const title = new RegExp(search, 'i');
+
+  const tagsArray = tags.split(',');
+  console.log(title);
+
+  const query = {
+    $or: [
+      { title },
+      { tags: { $in: tagsArray} }
+    ]
+  };
+
+  PostMessage.find(query)
+    .then((data) => {console.log(data); res.status(200).json(data)})
+    .catch(err => res.status(404).json({ message: err.message }));
+}
+
 export const createPost = (req, res) => {
   const post = req.body;
 

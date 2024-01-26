@@ -27,7 +27,7 @@ const Posts = () => {
   return (
     <>
       {
-        !posts.length ? <CircularProgress color='inherit' /> :
+        !posts?.length ? <CircularProgress color='inherit' /> :
         (
           <Grid
             className={classes.mainContainer}

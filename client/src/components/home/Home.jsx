@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Container, Grid, Grow, Paper, TextField, Typography } from '@material-ui/core';
+import { AppBar, Button, Container, Grid, Grow, Paper, TextField, Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
-import { fetch_all } from '../../redux/reducers/posts';
+import { fetch_all, searchPost } from '../../redux/reducers/posts';
 import Posts from '../posts/Posts';
 import Form from '../form/Form';
 import homeStyles from './styles';
@@ -21,13 +21,22 @@ const Home = () => {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetch_all());
   }, [dispatch]);
 
+  const handleSearch = () => {
+    if(search.trim() || tags?.length) {
+      dispatch(searchPost({ search, tags: tags.join(',') }));
+      navigate(`/posts/search?searchQuery=${search}&tags=${tags.join(',')}`, { replace: true });
+    }
+  }
+
   const handleKeyPress = (e) => {
     if(e.keyCode === 13) {
-
+      handleSearch();
     }
   }
 
@@ -54,6 +63,7 @@ const Home = () => {
   const query = useQuery();
   const page = query.get('page') || 1;
   const searchQuery = query.get('searchQuery');
+  console.log(searchQuery);
 
   const classes = homeStyles(); 
   return (
@@ -99,18 +109,24 @@ const Home = () => {
                       // variant='outlined' 
                       // label='Tags'
                       fullWidth 
-                      placeholder='Enter a tag, and spacebar to set'
+                      placeholder='Search by Tags'
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value === ' ' ? '' : e.target.value)}
                       onKeyDown={e => createTags(e)}
-                      style={{margin: '0px', padding: '0px', paddingLeft: '5px'}}
+                      style={{margin: '0px', padding: '0px'}}
                       InputProps={{
                         disableUnderline: true,
+                        classes: {
+                          input: classes.test
+                        }
                       }}
                       // inputRef={tagsRef}
                     />
                   </Grid>
                 </Grid>
+                <Button fullWidth color='primary' variant='contained'
+                  onClick={handleSearch}
+                >Search</Button>
               </AppBar>
               <Form />
               <Paper elevation={6}>

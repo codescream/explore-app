@@ -33,5 +33,11 @@ export default makeStyles((theme) => ({
     marginTop: '1rem',
     padding: '16px',
   },
+  test: {
+    '&::placeholder': {
+      color: 'rgb(46, 46, 46)'
+    },
+    paddingLeft: '10px'
+  }
   // gridContainer: 
 }));

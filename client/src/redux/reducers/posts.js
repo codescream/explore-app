@@ -23,6 +23,18 @@ export const create_post = createAsyncThunk("create_post", async (post) => {
   
 });
 
+export const searchPost = createAsyncThunk("searchPost", async (searchQuery) => {
+  console.log(searchQuery);
+  try {
+    const { data } = await apiPost.searchPost(searchQuery);
+    console.log(data);
+    return data;
+  }catch(err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  } 
+});
+
 export const like_post = createAsyncThunk("like_post", async (updateData) => {
   console.log(updateData);
   // const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
@@ -118,6 +130,15 @@ const postReducer = createSlice({
       state.data = state.data.filter(post => post._id !== action.payload._id);
     })
     .addCase(delete_post.rejected, (state, action) => {
+      state.error = action.error;
+    })
+    .addCase(searchPost.pending, (state, action) => {
+      state.isLoading = true;
+    })
+    .addCase(searchPost.fulfilled, (state, action) => {
+      state.data = action.payload;
+    })
+    .addCase(searchPost.rejected, (state, action) => {
       state.error = action.error;
     })
   }
