@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 
-export default makeStyles(() => ({
+export default makeStyles((theme) => ({
   appBar: {
     borderRadius: 15,
     margin: '30px 0',
@@ -12,19 +12,36 @@ export default makeStyles(() => ({
 
     '& div': {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      // backgroundColor: 'red'
-    }
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+    },
   },
   heading: {
     color: 'rgba(0,183,255, 1)',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    fontSize: ' 2.5em'
   },
   image: {
     marginLeft: '15px',
+
+    [theme.breakpoints.down('xs')]: {
+      height: '40px'
+    },
   },
   profile: {
     gap: '10px',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    },
+  },
+  toolbar: {
+    flexDirection: 'space-around',
+    padding: '0px',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    },
   }
 }))

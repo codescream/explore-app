@@ -14,7 +14,6 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 }
 
-
 const Home = () => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
@@ -23,9 +22,14 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  const query = useQuery();
+  const page = parseInt(query.get('page') || 1);
+  const searchQuery = query.get('searchQuery');
+
   useEffect(() => {
-    dispatch(fetch_all());
-  }, [dispatch]);
+    dispatch(fetch_all(page));
+    console.log(page);
+  }, [dispatch, page]);
 
   const handleSearch = () => {
     if(search.trim() || tags?.length) {
@@ -60,21 +64,16 @@ const Home = () => {
     setTags(tags.filter(tag => tag !== tag2remove));
   }
 
-  const query = useQuery();
-  const page = query.get('page') || 1;
-  const searchQuery = query.get('searchQuery');
-  console.log(searchQuery);
-
   const classes = homeStyles(); 
   return (
     <>
       <Grow in>
         <Container maxWidth='xl'>
           <Grid container className={classes.gridContainer} justifyContent='space-between' alignItems="stretch" spacing={3}>
-            <Grid item xs={12} sm={6} md={9}>
+            <Grid item xs={12} sm={6} md={8} lg={9}>
               <Posts />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
               <AppBar className={classes.appBarSearch} position='static' color='inherit'>
                 <TextField 
                   name='search'
@@ -130,7 +129,7 @@ const Home = () => {
               </AppBar>
               <Form />
               <Paper elevation={6}>
-                <Paginate />
+                <Paginate page={page} />
               </Paper>
             </Grid>
           </Grid>

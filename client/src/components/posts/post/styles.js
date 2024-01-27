@@ -18,7 +18,7 @@ export default makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     borderRadius: '15px',
-    height: '400px',
+    height: '100%',
     position: 'relative',
   },
   [theme.breakpoints.down('xs')]: {
@@ -51,7 +51,7 @@ export default makeStyles((theme) => ({
     padding: '0 16px',
   },
   cardActions: {
-    padding: '0 16px 8px 16px',
+    padding: '0 10px 8px 10px',
     display: 'flex',
     justifyContent: 'space-between',
   },

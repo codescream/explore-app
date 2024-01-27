@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as apiPost from '../../api/post';
 
-export const fetch_all = createAsyncThunk('fetch_all', async () => {
+export const fetch_all = createAsyncThunk('fetch_all', async (page) => {
   try {
-    const { data } = await apiPost.fetchPost();
+    const { data } = await apiPost.fetchPost(page);
+    console.log(data);
     return data;
   }catch(err) {
     console.log(err);
@@ -74,6 +75,8 @@ const postReducer = createSlice({
   initialState: {
     isLoading: false,
     data: [],
+    page: 1,
+    totalPages: 1,
     error: []
   },
   reducers: {
@@ -89,7 +92,9 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(fetch_all.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.page = action.payload.page;
+      state.totalPages = action.payload.totalPages;
+      state.data = action.payload.posts;
     })
     .addCase(fetch_all.rejected, (state, action) => {
       state.error = action.error;
@@ -107,11 +112,9 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(like_post.fulfilled, (state, action) => {
-      console.log(action);
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(like_post.rejected, (state, action) => {
-      console.log(action);
       state.error = action.error;
     })
     .addCase(update_post.pending, (state, action) => {
@@ -127,6 +130,7 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(delete_post.fulfilled, (state, action) => {
+      console.log(state.data);
       state.data = state.data.filter(post => post._id !== action.payload._id);
     })
     .addCase(delete_post.rejected, (state, action) => {

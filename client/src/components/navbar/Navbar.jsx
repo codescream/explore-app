@@ -64,7 +64,7 @@ const Navbar = () => {
         <img 
           src={explore}
           alt="explores"
-          height={60} 
+          height={50} 
           className={classes.image}
         />
       </div>

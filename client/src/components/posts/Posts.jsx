@@ -30,7 +30,7 @@ const Posts = () => {
         !posts?.length ? <CircularProgress color='inherit' /> :
         (
           <Grid
-            className={classes.mainContainer}
+            // className={classes.container}
             container
             alignItems='stretch'
             spacing={3}
@@ -41,7 +41,9 @@ const Posts = () => {
                   item
                   key={post._id}
                   xs={12}
-                  sm={6}
+                  sm={12}
+                  md={6}
+                  lg={3}
                 >
                   <motion.div
                     onClick={() => {setShowDetails(true); setSelectedPost(post)}}
@@ -49,6 +51,7 @@ const Posts = () => {
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
+                    style={{ height: '100%' }}
                   >
                     <Post post={post} />
                   </motion.div>
