@@ -46,7 +46,7 @@ export const getUser = async (req, res) => {
     if(!bcrypt.compareSync(password, userExist.password))
       return res.status(404).json({ message: 'username or password not correct' });
 
-    const token = jwt.sign({ email: userExist.email, id: userExist._id }, process.env.JWT_SECRET, { expiresIn: 60 * 3 });
+    const token = jwt.sign({ email: userExist.email, id: userExist._id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 });
 
     const user = await UserModel.findOne({ email }, {password: 0});
 

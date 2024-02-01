@@ -7,11 +7,12 @@ const next_prev = {
   height: '40px',
   backgroundColor: 'white',
   borderRadius: '30px',
-  display: 'flex',
+  display: 'none',
   justifyContent: 'center',
   alignItems: 'center',
   fontSize: '18px',
   fontWeight: 'bold',
+  opacity: 0,
   // userSelect: 'none',
   cursor: 'pointer',
   // zIndex: '2',
@@ -28,7 +29,8 @@ export default makeStyles((theme) => ({
     left: '0',
     bottom: '0',
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
     color: 'black',
     overflowY: 'scroll',
   },
@@ -40,7 +42,7 @@ export default makeStyles((theme) => ({
     alignItems: 'center',
     marginTop: '30px',
     backgroundColor: 'white',
-    padding: '20px 10px'
+    padding: '20px 10px',
   },
   postDetailsImages: {
     position: 'relative',
@@ -51,13 +53,19 @@ export default makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
 
+    '&:hover': {
+      '& div': {
+        display: 'flex'
+      }
+    },
+
     '& img': {
       width: '100%',
       objectFit: 'contain'
     },
 
     '& div': {
-      ...next_prev
+      ...next_prev,
     },
 
     [theme.breakpoints.down('sm')] : {
@@ -73,7 +81,7 @@ export default makeStyles((theme) => ({
     transform: 'scale(-1)'
   },
   closePostDetailsBtn: {
-    backgroundColor: 'white',
+    backgroundColor: "#f50057",
     height: 'fit-content',
     padding: '5px 12px',
     position: 'fixed',
@@ -95,5 +103,15 @@ export default makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer',
+  },
+  relatedExplore: {
+    width: '120px',
+    // height: '100%',
+  },
+  relatedContainer: {
+    justifyContent: 'flex-start',
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'center',
+    }
   }
 }));

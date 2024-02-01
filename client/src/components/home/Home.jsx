@@ -24,7 +24,7 @@ const Home = () => {
 
   const query = useQuery();
   const page = parseInt(query.get('page') || 1);
-  const searchQuery = query.get('searchQuery');
+  // const searchQuery = query.get('searchQuery');
 
   useEffect(() => {
     dispatch(fetch_all(page));
@@ -128,9 +128,12 @@ const Home = () => {
                 >Search</Button>
               </AppBar>
               <Form />
-              <Paper elevation={6}>
-                <Paginate page={page} />
-              </Paper>
+              {
+                (!search || tags.length !== 0) && (
+                <Paper elevation={6} className={classes.pagination}>
+                  <Paginate page={page} />
+                </Paper>)
+              }
             </Grid>
           </Grid>
         </Container>

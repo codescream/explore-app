@@ -31,7 +31,7 @@ export default makeStyles((theme) => ({
   pagination: {
     borderRadius: 4,
     marginTop: '1rem',
-    padding: '16px',
+    padding: '10px 0px',
   },
   test: {
     '&::placeholder': {

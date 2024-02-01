@@ -13,7 +13,6 @@ export const fetch_all = createAsyncThunk('fetch_all', async (page) => {
 });
 
 export const create_post = createAsyncThunk("create_post", async (post) => {
-  console.log(post);
   try {
     const { data } = await apiPost.createPost(post);
     return data;
@@ -25,10 +24,8 @@ export const create_post = createAsyncThunk("create_post", async (post) => {
 });
 
 export const searchPost = createAsyncThunk("searchPost", async (searchQuery) => {
-  console.log(searchQuery);
   try {
     const { data } = await apiPost.searchPost(searchQuery);
-    console.log(data);
     return data;
   }catch(err) {
     console.log(err);
@@ -37,7 +34,6 @@ export const searchPost = createAsyncThunk("searchPost", async (searchQuery) => 
 });
 
 export const like_post = createAsyncThunk("like_post", async (updateData) => {
-  console.log(updateData);
   // const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
   // console.log(data);
   // return data;  
@@ -75,6 +71,7 @@ const postReducer = createSlice({
   initialState: {
     isLoading: false,
     data: [],
+    filtered: [],
     page: 1,
     totalPages: 1,
     error: []
@@ -94,7 +91,9 @@ const postReducer = createSlice({
     .addCase(fetch_all.fulfilled, (state, action) => {
       state.page = action.payload.page;
       state.totalPages = action.payload.totalPages;
+      state.filtered = action.payload.filtered;
       state.data = action.payload.posts;
+      state.isLoading = false;
     })
     .addCase(fetch_all.rejected, (state, action) => {
       state.error = action.error;
@@ -103,22 +102,25 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(create_post.fulfilled, (state, action) => {
+      state.isLoading = false;
       state.data.push(action.payload);
+      state.filtered.push(action.payload);
     })
     .addCase(create_post.rejected, (state, action) => {
       state.error = action.error;
     })
     .addCase(like_post.pending, (state, action) => {
-      state.isLoading = true;
+      state.isLoading = false;
     })
     .addCase(like_post.fulfilled, (state, action) => {
+      state.filtered = state.filtered.map(post => post._id === action.payload._id ? action.payload : post);
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(like_post.rejected, (state, action) => {
       state.error = action.error;
     })
     .addCase(update_post.pending, (state, action) => {
-      state.isLoading = true;
+      state.isLoading = false;
     })
     .addCase(update_post.fulfilled, (state, action) => {
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
@@ -130,7 +132,8 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(delete_post.fulfilled, (state, action) => {
-      console.log(state.data);
+      state.isLoading = false;
+      state.filtered = state.filtered.filter(post => post._id !== action.payload._id);
       state.data = state.data.filter(post => post._id !== action.payload._id);
     })
     .addCase(delete_post.rejected, (state, action) => {
@@ -140,7 +143,8 @@ const postReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(searchPost.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.isLoading = false;
+      state.filtered = action.payload;
     })
     .addCase(searchPost.rejected, (state, action) => {
       state.error = action.error;

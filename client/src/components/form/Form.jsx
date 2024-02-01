@@ -145,7 +145,7 @@ const Form = () => {
         >
             {
               tags?.map((tag, index) => <Grid item key={index}
-                style={{backgroundColor: '#4356d3', margin: '2px', paddingLeft: '10px', borderRadius: '14px', height: 'fit-content', hover: 'red'}}
+                style={{backgroundColor: '#3f51b5', margin: '2px', paddingLeft: '10px', borderRadius: '14px', height: 'fit-content', hover: 'red'}}
               ><Typography style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', fontSize: '13px'}}>{tag} <span style={{cursor: 'pointer', color: 'black', padding: '0px 8px 1px', marginLeft: '5px', fontSize: '15px', backgroundColor: '#f50057', borderRadius: '60%', textAlign: 'center', fontWeight: 'bold'}}
                 onClick={() => clearTag(tag)}
               >x</span></Typography></Grid>)

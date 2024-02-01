@@ -20,6 +20,7 @@ export default makeStyles((theme) => ({
     borderRadius: '15px',
     height: '100%',
     position: 'relative',
+    cursor: 'pointer'
   },
   [theme.breakpoints.down('xs')]: {
     card: {

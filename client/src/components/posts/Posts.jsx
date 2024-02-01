@@ -4,17 +4,20 @@ import { Grid, CircularProgress } from '@material-ui/core';
 import { motion } from 'framer-motion';
 
 import Post from './post/Post';
-import postsStyles from './styles';
+// import postsStyles from './styles';
 import PostDetails from './postDetails/PostDetails';
 
 const Posts = () => {
-  const posts = useSelector(state => state.postsReducer.data);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+
+  const paginatedPosts = useSelector(state => state.postsReducer.filtered);
+  const posts = useSelector(state => state.postsReducer.data);
+  const isLoading = useSelector(state => state.postsReducer.isLoading);
   
 
 
-  const classes = postsStyles();
+  // const classes = postsStyles();
 
   // useEffect(() => {
   //   first
@@ -27,7 +30,7 @@ const Posts = () => {
   return (
     <>
       {
-        !posts?.length ? <CircularProgress color='inherit' /> :
+        !paginatedPosts?.length || isLoading ? <CircularProgress color='inherit' /> :
         (
           <Grid
             // className={classes.container}
@@ -36,7 +39,7 @@ const Posts = () => {
             spacing={3}
           >
             {
-              posts.map(post => (
+              paginatedPosts.map(post => (
                 <Grid
                   item
                   key={post._id}
@@ -58,7 +61,12 @@ const Posts = () => {
                 </Grid>
               ))
             }
-            <PostDetails setShowDetails={setShowDetails} selectedPost={selectedPost} setSelectedPost={setSelectedPost} />
+            <PostDetails key={Date.now()} 
+              setShowDetails={setShowDetails} 
+              selectedPost={selectedPost} 
+              setSelectedPost={setSelectedPost} 
+              posts={posts}
+            />
           </Grid>
         )
       }

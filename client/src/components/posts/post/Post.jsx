@@ -100,7 +100,7 @@ const Post = ({ post }) => {
           &nbsp; LIKE &nbsp;
           {post.likes.length}
         </Button>
-        <Button size='small' color='primary' disabled={post.creator_id !== id} 
+        <Button size='small' color='secondary' disabled={post.creator_id !== id} 
           onClick={(e) => {stopBubble(e); 
           dispatch(post_id(null));
           dispatch(delete_post(post._id))}}>

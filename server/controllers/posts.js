@@ -17,12 +17,14 @@ export const getPosts = async (req, res) => {
   const skip = (page - 1) * LIMIT;
   const totalDocuments = await PostMessage.countDocuments();
 
-  const totalPages = Math.round(totalDocuments / LIMIT);
+  const totalPages = Math.ceil(totalDocuments / LIMIT);
+
+  const allPosts = await PostMessage.find().then((data) => data);
 
   PostMessage.find()
     .skip(skip)
     .limit(LIMIT)
-    .then((data) => {console.log(data); res.status(200).json({ posts: data, page, totalPages })})
+    .then((data) => {console.log(data); res.status(200).json({ posts: allPosts, filtered: data, page, totalPages })})
     .catch((err) => res.status(500).json({ message: err.message}));
 }
 
