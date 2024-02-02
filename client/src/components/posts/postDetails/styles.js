@@ -109,6 +109,7 @@ export default makeStyles((theme) => ({
     // height: '100%',
   },
   relatedContainer: {
+    marginTop: '1px',
     justifyContent: 'flex-start',
     [theme.breakpoints.down('xs')]: {
       justifyContent: 'center',

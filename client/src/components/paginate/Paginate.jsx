@@ -9,7 +9,6 @@ const Paginate = ({page}) => {
   const classes = paginateStyles();
 
   const totalPages = useSelector(state => state.postsReducer.totalPages);
-  console.log(totalPages);
   
   return (
     <Pagination

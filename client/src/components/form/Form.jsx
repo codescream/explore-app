@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper, Grid, CircularProgress } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux'; 
@@ -20,9 +20,7 @@ const Form = () => {
     selectedFile: [""]
   });
   const [file, setFile] = useState(Date.now());
-  const [processing, setProcessing] = useState(false);
-
-  const tagsRef = useRef(null);
+  const [processing, setProcessing] = useState(false);  
 
   const postId = useSelector((state) => state.allStateReducer.value);
   const post_to_update = useSelector((state) => postId ? state.postsReducer.data.find((post) => post._id === postId) : postData);

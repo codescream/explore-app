@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as apiPost from '../../api/post';
 
 export const fetch_all = createAsyncThunk('fetch_all', async (page) => {
+  console.log(page);
   try {
     const { data } = await apiPost.fetchPost(page);
     console.log(data);
@@ -20,7 +21,17 @@ export const create_post = createAsyncThunk("create_post", async (post) => {
     console.log(err);
     throw new Error(err.response.data.message);
   }
-  
+});
+
+export const add_comment = createAsyncThunk("add_comment", async ({ id, comment }) => {
+  try {
+    const { data } = await apiPost.addComment(id, comment);
+    console.log(data);
+    return data;
+  }catch(err) {
+    console.log(err);
+    throw new Error(err.response.data.message);
+  }
 });
 
 export const searchPost = createAsyncThunk("searchPost", async (searchQuery) => {
@@ -110,7 +121,7 @@ const postReducer = createSlice({
       state.error = action.error;
     })
     .addCase(like_post.pending, (state, action) => {
-      state.isLoading = false;
+      state.isLoading = false; // don't reload page
     })
     .addCase(like_post.fulfilled, (state, action) => {
       state.filtered = state.filtered.map(post => post._id === action.payload._id ? action.payload : post);
@@ -123,9 +134,20 @@ const postReducer = createSlice({
       state.isLoading = false;
     })
     .addCase(update_post.fulfilled, (state, action) => {
+      state.filtered = state.filtered.map(post => post._id === action.payload._id ? action.payload : post);
       state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
     })
     .addCase(update_post.rejected, (state, action) => {
+      state.error = action.error;
+    })
+    .addCase(add_comment.pending, (state, action) => {
+      state.isLoading = false;
+    })
+    .addCase(add_comment.fulfilled, (state, action) => {
+      state.filtered = state.filtered.map(post => post._id === action.payload._id ? action.payload : post);
+      state.data = state.data.map(post => post._id === action.payload._id ? action.payload : post);
+    })
+    .addCase(add_comment.rejected, (state, action) => {
       state.error = action.error;
     })
     .addCase(delete_post.pending, (state, action) => {

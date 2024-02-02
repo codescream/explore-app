@@ -14,17 +14,12 @@ const Posts = () => {
   const paginatedPosts = useSelector(state => state.postsReducer.filtered);
   const posts = useSelector(state => state.postsReducer.data);
   const isLoading = useSelector(state => state.postsReducer.isLoading);
-  
-
 
   // const classes = postsStyles();
 
-  // useEffect(() => {
-  //   first
-  
-  // }, [showDetails])
+  console.log(paginatedPosts);
+  console.log(posts);
 
-  
   document.body.style.overflow = showDetails ? 'hidden' : '';
   
   return (
@@ -61,7 +56,7 @@ const Posts = () => {
                 </Grid>
               ))
             }
-            <PostDetails key={Date.now()} 
+            <PostDetails key={selectedPost?._id} 
               setShowDetails={setShowDetails} 
               selectedPost={selectedPost} 
               setSelectedPost={setSelectedPost} 

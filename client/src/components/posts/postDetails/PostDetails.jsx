@@ -4,15 +4,16 @@ import { Button, Divider, Grid, Typography } from '@material-ui/core';
 import { motion, AnimatePresence } from "framer-motion";
 
 import postDetailsStyles from './styles';
+import Comments from './comments/Comments';
 
 
 const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [relatedExplores, setRelatedExplores] = useState([]);
+  
   const classes = postDetailsStyles();
 
   const explore = selectedPost?.selectedFile[currentIndex];
-  console.log(posts);
 
   useEffect(() => {
     setCurrentIndex(0);
@@ -21,8 +22,7 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
       return post.tags.some(tag => selectedPost?.tags.includes(tag)) && post._id !== selectedPost?._id
     }));
 
-    
-  
+    //eslint-disable-next-line
   }, [selectedPost]);
 
 
@@ -30,12 +30,11 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
     setSelectedPost(null); 
     setShowDetails(false);
 
-    const delayDisplay = setTimeout(() => {
+    setTimeout(() => {
       setSelectedPost(explore);
       setShowDetails(true);
     }, 1000);
   }
-  
 
   const switchImg = (curIndex) => {
     setCurrentIndex(curIndex);
@@ -115,10 +114,12 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
                 {selectedPost.message}
               </Typography>
 
+              <Comments post={selectedPost} />
+
               <motion.div
-                style={{ width: '90%'}}
+                style={{ marginTop: '50px', width: '90%'}}
               >
-                <Typography> Related Explores...</Typography>
+                <Typography>Related Explores...</Typography>
                 <Divider style={{ height: '3px', color: 'black'}} />
                 <Grid 
                   container
@@ -141,7 +142,6 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
                   }
                 </Grid>
               </motion.div>
-              
             </div>
           </motion.div>
         )}

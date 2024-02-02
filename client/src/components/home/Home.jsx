@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppBar, Button, Container, Grid, Grow, Paper, TextField, Typography } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
@@ -19,6 +19,9 @@ const Home = () => {
   const [search, setSearch] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
+  const editPost = useRef();
+
+  const postId = useSelector((state) => state.allStateReducer.value);
 
   const navigate = useNavigate();
 
@@ -28,9 +31,14 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetch_all(page));
-    console.log(page);
+
   }, [dispatch, page]);
 
+  useEffect(() => {
+    editPost.current.scrollIntoView({ behaviour: 'smooth' });
+  
+  }, [postId]);
+  
   const handleSearch = () => {
     if(search.trim() || tags?.length) {
       dispatch(searchPost({ search, tags: tags.join(',') }));
@@ -74,6 +82,7 @@ const Home = () => {
               <Posts />
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3}>
+              <div ref={editPost} />
               <AppBar className={classes.appBarSearch} position='static' color='inherit'>
                 <TextField 
                   name='search'
@@ -119,7 +128,6 @@ const Home = () => {
                           input: classes.test
                         }
                       }}
-                      // inputRef={tagsRef}
                     />
                   </Grid>
                 </Grid>
@@ -129,7 +137,7 @@ const Home = () => {
               </AppBar>
               <Form />
               {
-                (!search || tags.length !== 0) && (
+                (!search && tags.length === 0) && (
                 <Paper elevation={6} className={classes.pagination}>
                   <Paginate page={page} />
                 </Paper>)

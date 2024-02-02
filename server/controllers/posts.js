@@ -10,7 +10,6 @@ export const getPosts = async (req, res) => {
   //   res.status(500).json({ message: error.message });
   // }
   const { page } = req.query;
-
   console.log(page);
   
   const LIMIT = 8;
@@ -20,6 +19,8 @@ export const getPosts = async (req, res) => {
   const totalPages = Math.ceil(totalDocuments / LIMIT);
 
   const allPosts = await PostMessage.find().then((data) => data);
+
+  console.log(allPosts);
 
   PostMessage.find()
     .skip(skip)
@@ -34,7 +35,6 @@ export const searchPosts = (req, res) => {
   const title = new RegExp(search, 'i');
 
   const tagsArray = tags.split(',');
-  console.log(title);
 
   const query = {
     $or: [
@@ -56,11 +56,22 @@ export const createPost = (req, res) => {
 
   const newPost = new PostMessage({...post, creator_id: req.userId});
 
-  console.log(newPost.createdAt);
-
   newPost.save()
     .then((data) => res.status(201).json(data))
     .catch((err) => res.status(500).json({error: err.message})); 
+}
+
+export const addComment = async (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  const post = await PostMessage.findById(id);
+
+  post.comments.push(body);
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+
+  res.status(200).json(updatedPost);
 }
 
 export const likePost = (req, res) => {

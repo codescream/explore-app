@@ -1,22 +1,34 @@
 import { makeStyles } from "@material-ui/core";
 
-export default makeStyles((theme) => ({
-  appBar: {
-    borderRadius: 15,
-    margin: '30px 0',
-    padding:  "1px 20px",
+const appBar = {
+  borderRadius: 15,
+  margin: '30px 0',
+  padding:  "1px 20px",
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+
+  '& div': {
     display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  }
+};
 
-    '& div': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
+export default makeStyles((theme) => ({
+  loggedIn: {
+    ...appBar,
     [theme.breakpoints.down('xs')]: {
       flexDirection: 'column',
+    },
+  },
+  loggedOut: {
+    ...appBar,
+    [theme.breakpoints.down('xs')]: {
+      '& div': {
+        justifyContent: 'flex-end',
+      }
     },
   },
   heading: {
@@ -34,11 +46,20 @@ export default makeStyles((theme) => ({
   profile: {
     gap: '10px',
     [theme.breakpoints.down('xs')]: {
+      justifyContent: 'space-around',
+      width: '100%'
+    },
+  },
+  noProfile: {
+    gap: '10px',
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'flex-end',
       width: '100%'
     },
   },
   toolbar: {
-    flexDirection: 'space-around',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     padding: '0px',
     [theme.breakpoints.down('xs')]: {
       width: '100%'

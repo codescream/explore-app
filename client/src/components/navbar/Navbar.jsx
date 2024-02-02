@@ -13,16 +13,13 @@ const Navbar = () => {
   const profile = useSelector(state => state.userReducer.data);
   const error = useSelector(state => state.postsReducer.error);
 
-  console.log('always');
-
-  console.log(error);
-  console.log(profile);
   console.log(user);
+  console.log(profile);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(profile);
     if(profile) {
       setUser(profile.data);
       navigate('/', { replace: true});
@@ -50,7 +47,7 @@ const Navbar = () => {
 
   const classes = navStyles();
   return (
-    <AppBar className={classes.appBar} position="static" color="inherit">
+    <AppBar className={user ? classes.loggedIn : classes.loggedOut} position="static" color="inherit">
       <div>
         <Typography
           component={Link}
@@ -77,33 +74,31 @@ const Navbar = () => {
               className={classes.profile}
             >
               <Avatar
-                className='classes.purple' alt={user?.name} src={user?.picture}
+                alt={user?.name} src={user?.picture}
               >
                 {user?.name?.charAt[0]}
               </Avatar>
               <Typography
-                className={classes.userName}
                 variant='h6'
               >
                 {user?.name}
               </Typography>
               <Button 
                 variant="contained"
-                className={classes.logout}
                 color='secondary'
                 onClick={logOutUser}
               >Logout</Button>
             </div>
-          ) : (
-            <Button
-              component={Link}
-              to="/auth"
-              variant="contained"
-              color="primary"
-            >
-              Sign In
-            </Button>
-          )}
+          ) : (<div className={classes.noProfile}>
+                <Button
+                component={Link}
+                to="/auth"
+                variant="contained"
+                color="primary"
+                >
+                  Sign In
+                </Button>
+              </div>)}
       </Toolbar>
     </AppBar>
   )
