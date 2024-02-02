@@ -10,7 +10,6 @@ export const getPosts = async (req, res) => {
   //   res.status(500).json({ message: error.message });
   // }
   const { page } = req.query;
-  console.log(page);
   
   const LIMIT = 8;
   const skip = (page - 1) * LIMIT;
@@ -18,15 +17,20 @@ export const getPosts = async (req, res) => {
 
   const totalPages = Math.ceil(totalDocuments / LIMIT);
 
-  const allPosts = await PostMessage.find().then((data) => data);
+  try {
+    const allPosts = await PostMessage.find().then((data) => data);
 
-  console.log(allPosts);
+    const limitedPosts = await PostMessage.find().skip(skip).limit(LIMIT);
 
-  PostMessage.find()
-    .skip(skip)
-    .limit(LIMIT)
-    .then((data) => {console.log(data); res.status(200).json({ posts: allPosts, filtered: data, page, totalPages })})
-    .catch((err) => res.status(500).json({ message: err.message}));
+    res.status(200).json({ posts: allPosts, filtered: limitedPosts, page, totalPages });
+  }catch (err) {
+    res.status(500).json({ message: err.message})
+  }
+  // PostMessage.find()
+  //   .skip(skip)
+  //   .limit(LIMIT)
+  //   .then((data) => {console.log(data); res.status(200).json({ posts: allPosts, filtered: data, page, totalPages })})
+  //   .catch((err) => res.status(500).json({ message: err.message}));
 }
 
 export const searchPosts = (req, res) => {
@@ -44,7 +48,7 @@ export const searchPosts = (req, res) => {
   };
 
   PostMessage.find(query)
-    .then((data) => {console.log(data); res.status(200).json(data)})
+    .then((data) => {res.status(200).json(data)})
     .catch(err => res.status(404).json({ message: err.message }));
 }
 
@@ -115,5 +119,5 @@ export const deletePost = (req, res) => {
 
   PostMessage.findByIdAndDelete(id)
     .then((data) => res.status(200).json(data))
-    .catch((err) => res.status());
+    .catch((err) => res.status(500).json({ error: err.message }));
 }

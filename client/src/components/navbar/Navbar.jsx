@@ -13,9 +13,6 @@ const Navbar = () => {
   const profile = useSelector(state => state.userReducer.data);
   const error = useSelector(state => state.postsReducer.error);
 
-  console.log(user);
-  console.log(profile);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

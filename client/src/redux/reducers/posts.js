@@ -2,10 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as apiPost from '../../api/post';
 
 export const fetch_all = createAsyncThunk('fetch_all', async (page) => {
-  console.log(page);
   try {
     const { data } = await apiPost.fetchPost(page);
-    console.log(data);
     return data;
   }catch(err) {
     console.log(err);
@@ -26,7 +24,6 @@ export const create_post = createAsyncThunk("create_post", async (post) => {
 export const add_comment = createAsyncThunk("add_comment", async ({ id, comment }) => {
   try {
     const { data } = await apiPost.addComment(id, comment);
-    console.log(data);
     return data;
   }catch(err) {
     console.log(err);
@@ -46,7 +43,6 @@ export const searchPost = createAsyncThunk("searchPost", async (searchQuery) => 
 
 export const like_post = createAsyncThunk("like_post", async (updateData) => {
   // const { data } = await apiPost.likePost(updateData.postId, updateData.postData);
-  // console.log(data);
   // return data;  
   try {
     const { data } = await apiPost.likePost(updateData.postId, updateData.postData);

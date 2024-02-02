@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Divider, Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Divider, Grid, Paper, TextField, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
 import commentStyles from './styles'
@@ -9,25 +9,31 @@ import { add_comment } from '../../../../redux/reducers/posts';
 const Comments = ({ post }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState(post?.comments);
+  const [processing, setProcessing] = useState(false);
 
-  const filter = useSelector(state => state.postsReducer.data.find(item => item._id === post._id))
+  const commentsRef = useRef();
+
+  const user = JSON.parse(localStorage.getItem('profile'));
+
+  const filter = useSelector(state => state.postsReducer.data.find(item => item._id === post._id));
 
   useEffect(() => {
-    setComments(filter.comments)
+    setComments(filter.comments);
   
-  }, [filter])
+  }, [filter]);
 
   const dispatch = useDispatch();
 
   const classes = commentStyles();
 
   const handleComment = async () => {
+    setProcessing(true);
     if(comment.trim() !== '') {
-      const user = JSON.parse(localStorage.getItem('profile'));
-
-      dispatch(add_comment({ id: post?._id, comment: {username: user.name, comment: comment} }));
+      dispatch(add_comment({ id: post?._id, comment: {username: user.name, comment: comment} }))
+        .then(() => setProcessing(false));
 
       setComment('');
+      commentsRef.current.scrollIntoView({ behaviour: 'smooth'});
     }
   }
 
@@ -58,6 +64,7 @@ const Comments = ({ post }) => {
             </Typography>
             ))
           }
+          <div ref={commentsRef} />
         </Grid>
         <Grid item
           md={5}
@@ -70,7 +77,7 @@ const Comments = ({ post }) => {
           >
             <TextField 
               fullWidth
-              label="Drop A Comment..."
+              label={user ? "Drop A Comment..." : "Sign in to Comment..."}
               maxRows={11}
               minRows={11}
               variant='outlined'
@@ -84,7 +91,14 @@ const Comments = ({ post }) => {
             fullWidth
             color='primary'
             onClick={handleComment}
-          >Comment</Button>
+            disabled={!user || processing}
+          >Comment
+            {
+              processing && <CircularProgress 
+              style={{ position: 'absolute', width: '18px', height: '18px', color: 'black', zIndex: '200'}}
+              />
+            }
+          </Button>
         </Grid>
       </Grid>
     </motion.div>

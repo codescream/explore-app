@@ -17,9 +17,6 @@ const Posts = () => {
 
   // const classes = postsStyles();
 
-  console.log(paginatedPosts);
-  console.log(posts);
-
   document.body.style.overflow = showDetails ? 'hidden' : '';
   
   return (

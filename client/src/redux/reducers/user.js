@@ -22,11 +22,7 @@ import * as apiUser from '../../api/user';
 // });
 
 export const sign_in_google = createAsyncThunk('sign-in-google', async (code) => {
-  console.log(code);
-
   const { data } = await apiAuth.authUser(code);
-
-  console.log(data);
 
   return {data, token: data.id_token};
 });
@@ -34,14 +30,12 @@ export const sign_in_google = createAsyncThunk('sign-in-google', async (code) =>
 export const create_user = createAsyncThunk('create-user', async (newUser) => {
   const { data } = await apiUser.createUser(newUser);
 
-  console.log(data);
   return data;
 });
 
 export const sign_in = createAsyncThunk('sign-in', async (user) => {
   const { data } = await apiUser.signIn(user);
 
-  console.log(data);
   return data;
 });
 
@@ -62,7 +56,6 @@ const userReducer = createSlice({
       state.isLoading = true;
     })
     .addCase(sign_in_google.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.data = action.payload;
     })
     .addCase(sign_in_google.rejected, (state, action) => {

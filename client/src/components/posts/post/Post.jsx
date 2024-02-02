@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
@@ -13,10 +14,11 @@ import { useNavigate } from 'react-router-dom';
 
 const Post = ({ post }) => {
   const classes = postStyles();
+  const id = JSON.parse(localStorage.getItem('profile'))?._id;
+  const [like, setLike] = useState(post.likes.includes(id));
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const id = JSON.parse(localStorage.getItem('profile'))?._id;
 
   const stopBubble = (e) => {
     e.stopPropagation();
@@ -32,8 +34,10 @@ const Post = ({ post }) => {
 
     let likePost = [];
     if(post.likes.includes(`${id}`)) {
+      setLike(false);
       likePost = [...post.likes.filter(like => like !== id)];
     }else {
+      setLike(true);
       likePost =  [...post.likes, id];
     }
     dispatch(like_post({ postId:post._id, postData: { ...post, likes: [ ...likePost ]} }));
@@ -96,7 +100,10 @@ const Post = ({ post }) => {
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button size='small' color='primary' onClick={handleLikes}>
-          <ThumbUpAltIcon fontSize='small' />
+          {
+            like ? <ThumbUpAltIcon fontSize='small' /> : <ThumbUpOutlinedIcon fontSize='small' />
+          }
+          
           &nbsp; LIKE &nbsp;
           {post.likes.length}
         </Button>

@@ -189,8 +189,7 @@ const Form = () => {
         >{submitBtn}
           {
             processing && <CircularProgress 
-            style={{ position: 'absolute', width: '18px', height: '18px', color: 'black', zIndex: '200'}}
-          />
+            style={{ position: 'absolute', width: '18px', height: '18px', color: 'black', zIndex: '200'}} />
           }
         </Button>
         <Button 

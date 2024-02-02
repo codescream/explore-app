@@ -63,9 +63,7 @@ const Auth = () => {
 
   const login = useGoogleLogin({
     onSuccess: response => {
-      console.log(response);
-      dispatch(sign_in_google({code: response.code}))
-        .then((data) => console.log(data));
+      dispatch(sign_in_google({code: response.code}));
     },
     onError: response => {
       console.log(response);

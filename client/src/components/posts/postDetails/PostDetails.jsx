@@ -114,7 +114,7 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
                 {selectedPost.message}
               </Typography>
 
-              <Comments post={selectedPost} />
+              <Comments key={selectedPost} post={selectedPost} />
 
               <motion.div
                 style={{ marginTop: '50px', width: '90%'}}
