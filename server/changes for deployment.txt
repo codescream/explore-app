@@ -1,0 +1,5 @@
+in server package.json
+change nodemon index.js => node index.js
+
+add a file to the server root and name it .Procfile
+add to it => web: npm run start

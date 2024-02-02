@@ -19,6 +19,10 @@ app.use('/posts', postRoutes);
 app.use('/user', userRoutes);
 app.use('/auth', googleAuthRoutes);
 
+app.get('/', (req, res) => {
+  res.send('SERVER IS RUNNING');
+});
+
 
 // dotenv.config();
 
