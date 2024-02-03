@@ -117,6 +117,8 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
               <Comments key={selectedPost} post={selectedPost} />
 
               <motion.div
+                whileInView={{ y: [100, 50, 0], opacity: [0, 0, 1] }}
+                transition={{ duration: 0.5 }}
                 style={{ marginTop: '50px', width: '90%'}}
               >
                 <Typography>Related Explores...</Typography>
@@ -131,6 +133,9 @@ const PostDetails = ({ selectedPost, setSelectedPost, setShowDetails, posts }) =
                   {
                     relatedExplores?.map((explore, index) => <Grid item key={index} className={classes.relatedExplore}>
                       <motion.div
+                        whileInView={{ opacity: 1 }}
+                        whileHover={{ scale:     1.1 }}
+                        transition={{ duration: 0.5, type: 'tween'}}
                         key={index}
                         style={{ height: '100%', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
                         onClick={() => switchExplore(explore)}
