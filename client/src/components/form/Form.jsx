@@ -12,6 +12,7 @@ const Form = () => {
   const [formTitle, setFormTitle] = useState("Create an Explore");
   const [submitBtn, setSubmitBtn] = useState("Submit");
   const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState('');
   const loggedUser = localStorage.getItem('profile') ? JSON.parse(localStorage.getItem('profile')) : null;
   const [postData, setPostData] = useState({
     title: "",
@@ -82,7 +83,7 @@ const Form = () => {
       case ' ':
         if(!tags.includes(e.target.value) && e.target.value !== "")
           setTags([...tags, `${e.target.value}`]);
-        postData.tags = '';
+        setTagInput('');
         // tagsRef.current.value = "";
         break;
       case 'Backspace':
@@ -157,8 +158,8 @@ const Form = () => {
               // label='Tags'
               fullWidth 
               placeholder='Enter a tag, and spacebar to set'
-              value={postData.tags}
-              onChange={e => setPostData({ ...postData, tags: e.target.value === ' ' ? '' : e.target.value })}
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value === ' ' ? '' : e.target.value)}
               onKeyDown={e => createTags(e)}
               style={{margin: '0px', padding: '0px', paddingLeft: '5px'}}
               InputProps={{

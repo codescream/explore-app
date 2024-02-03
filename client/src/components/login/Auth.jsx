@@ -35,10 +35,10 @@ const Auth = () => {
     
     if(isSignup){
       dispatch(create_user(formData))
-        .then((data) => console.log(data))
+        .then((data) => console.log('user created'));
     }else {
       dispatch(sign_in({ email: formData.email, password: formData.password }))
-        .then((data) => {console.log(data); navigate('/', { replace: true })});
+        .then((data) => {console.log(data.type); navigate('/', { replace: true })});
     }
   }
 
