@@ -133,7 +133,7 @@ const Home = () => {
                 </Grid>
                 <Button fullWidth color='primary' variant='contained'
                   onClick={handleSearch}
-                >Search</Button>
+                >Searches</Button>
               </AppBar>
               <Form />
               {

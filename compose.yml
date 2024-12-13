@@ -1,0 +1,36 @@
+services:
+  web:
+    depends_on:
+      - api
+    build: ./client
+    ports:
+      - 8001:8001
+    environment:
+      - PORT=8001
+    develop:
+      watch:
+        - path: ./client/package.json
+          action: rebuild
+        - path: ./client/package-lock.json
+          action: rebuild
+        - path: ./client
+          target: /app
+          action: sync
+        - path: ./client
+          action: rebuild
+
+  api:
+    build: ./server
+    ports:
+      - 8002:8002
+    develop:
+      watch:
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/package-lock.json
+          action: rebuild
+        - path: ./server
+          target: /app
+          action: sync
+        - path: ./server
+          action: rebuild
